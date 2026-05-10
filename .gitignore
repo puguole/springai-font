@@ -1,0 +1,19 @@
+## Claude Code
+.claude/
+
+## IDE
+.idea/
+*.iml
+.vscode/
+
+## Node
+node_modules/
+dist/
+
+## System
+*.stackdump
+*.log
+
+## Temp files
+cp.txt
+path

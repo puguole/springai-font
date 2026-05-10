@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spring AI Agent 前端技术方案</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0b0d16;
+  --surface: #11141f;
+  --surface-2: #181c2a;
+  --border: #262b3d;
+  --accent: #f5a623;
+  --accent-dim: rgba(245, 166, 35, 0.1);
+  --accent-glow: rgba(245, 166, 35, 0.06);
+  --text: #e4e8f1;
+  --text-secondary: #8b91a6;
+  --text-muted: #5a6077;
+  --tag-bg: rgba(245, 166, 35, 0.12);
+  --tag-text: #f5a623;
+  --code-bg: #0e111d;
+  --code-text: #c9d1d9;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Noto Sans SC', -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.8;
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+}
+.bg-glow {
+  position: fixed;
+  top: -40vh;
+  left: 50%;
+  translate: -50% 0;
+  width: 800px;
+  height: 800px;
+  background: radial-gradient(circle, rgba(245, 166, 35, 0.04) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+.container {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 60px 40px 100px;
+  position: relative;
+  z-index: 1;
+}
+/* Header */
+.doc-header {
+  margin-bottom: 56px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid var(--border);
+}
+.doc-header .tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: var(--tag-bg);
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-bottom: 16px;
+}
+.doc-header .tag::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+.doc-header h1 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 32px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-bottom: 8px;
+}
+.doc-header .meta {
+  color: var(--text-secondary);
+  font-size: 14px;
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.doc-header .meta span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+/* Section */
+section { margin-bottom: 48px; }
+h2 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 20px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+h2 .sec-num {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-muted);
+  background: var(--surface-2);
+  padding: 0 10px;
+  border-radius: 4px;
+}
+h3 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 17px;
+  font-weight: 500;
+  margin: 24px 0 12px;
+  color: var(--text);
+}
+h4 {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 18px 0 8px;
+  color: var(--text-secondary);
+}
+p { margin-bottom: 14px; color: var(--text-secondary); }
+p strong { color: var(--text); }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+/* Lists */
+ul, ol { margin: 0 0 14px 0; padding-left: 20px; }
+li { margin-bottom: 4px; color: var(--text-secondary); }
+li strong { color: var(--text); }
+/* Code inline */
+code:not(pre code) {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  background: var(--surface-2);
+  color: var(--accent);
+  padding: 2px 7px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+/* Code blocks */
+pre {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 18px 20px;
+  overflow-x: auto;
+  margin: 16px 0 20px;
+  position: relative;
+}
+pre code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--code-text);
+  white-space: pre;
+}
+pre::before {
+  content: attr(data-lang);
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-muted);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+/* Tables */
+.table-wrap {
+  overflow-x: auto;
+  margin: 16px 0 20px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+thead th {
+  background: var(--surface-2);
+  text-align: left;
+  padding: 10px 16px;
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--text);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+tbody td {
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-secondary);
+}
+tbody tr:last-child td { border-bottom: none; }
+tbody td:first-child { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--accent); }
+/* Blockquote */
+blockquote {
+  border-left: 3px solid var(--accent);
+  background: var(--accent-dim);
+  padding: 12px 18px;
+  margin: 16px 0 20px;
+  border-radius: 0 6px 6px 0;
+}
+blockquote p { margin: 0; color: var(--text-secondary); }
+/* Checkbox list */
+.task-list { list-style: none; padding-left: 0; }
+.task-list li { display: flex; align-items: center; gap: 10px; padding: 4px 0; }
+.task-list li::before {
+  content: '';
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  border: 2px solid var(--border);
+  flex-shrink: 0;
+}
+.task-list li.checked::before {
+  background: var(--accent);
+  border-color: var(--accent);
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 16 16' fill='%230b0d16' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6.173 10.984L3.322 8.133l-.942.942 3.793 3.793 7.425-7.425-.942-.942z'/%3E%3C/svg%3E");
+}
+/* Diagram (ASCII) */
+.diagram {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px 20px;
+  overflow-x: auto;
+  margin: 16px 0 20px;
+  white-space: pre;
+  color: var(--code-text);
+}
+/* Divider */
+hr { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
+/* Responsive */
+@media (max-width: 600px) {
+  .container { padding: 32px 20px 60px; }
+  .doc-header h1 { font-size: 24px; }
+  h2 { font-size: 18px; }
+  pre, .diagram { font-size: 12px; padding: 14px; }
+}
+/* Print */
+@media print {
+  body { background: white; color: #1a1a2e; }
+  .bg-glow { display: none; }
+  .doc-header { border-bottom-color: #ddd; }
+  pre, .diagram, code:not(pre code) { background: #f5f5f5; }
+  :root { --bg: white; --surface: #fafafa; --surface-2: #f0f0f0; --border: #ddd; --accent: #b8860b; --text: #1a1a2e; --text-secondary: #555; --code-bg: #f5f5f5; }
+}
+</style>
+</head>
+<body>
+<div class="bg-glow"></div>
+<div class="container">
+  <header class="doc-header">
+    <div class="tag">技术方案文档</div>
+    <h1>Spring AI Agent 前端技术方案</h1>
+    <div class="meta">
+      <span>React 18 + TypeScript + Vite</span>
+      <span>Tailwind CSS 主题定制</span>
+      <span>2026-05-10</span>
+    </div>
+  </header>
+
+  <section>
+    <h2><span class="sec-num">一</span>项目概述</h2>
+    <p>为 Spring AI Agent 后端（<code>/api/agent/chat</code> 和 <code>/api/agent/stream-chat</code>）构建一个现代化的 React 前端界面，提供智能对话交互能力。</p>
+  </section>
+
+  <section>
+    <h2><span class="sec-num">二</span>技术选型</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>技术</th>
+            <th>版本</th>
+            <th>说明</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>React</td><td>18.x</td><td>UI 框架</td></tr>
+          <tr><td>TypeScript</td><td>5.x</td><td>类型安全</td></tr>
+          <tr><td>Vite</td><td>5.x</td><td>构建工具（HMR 快速开发）</td></tr>
+          <tr><td>Tailwind CSS</td><td>3.x</td><td>原子化 CSS，快速定制主题</td></tr>
+          <tr><td>ahooks</td><td>3.x</td><td>常用 React Hooks 工具集</td></tr>
+          <tr><td>clsx</td><td>2.x</td><td>条件 class 拼接</td></tr>
+          <tr><td>date-fns</td><td>3.x</td><td>时间格式化</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <blockquote><p>不使用重量级 UI 组件库（Ant Design / Element Plus），保持包体积和设计自由度。</p></blockquote>
+  </section>
+
+  <section>
+    <h2><span class="sec-num">三</span>项目结构</h2>
+    <pre data-lang="tree">springai-frontend/
+├── index.html
+├── package.json
+├── tsconfig.json
+├── vite.config.ts
+├── tailwind.config.ts
+├── postcss.config.js
+├── public/
+│   └── favicon.svg
+└── src/
+    ├── main.tsx                  # 入口
+    ├── App.tsx                   # 根组件
+    ├── api/                      # API 层
+    │   ├── client.ts             # HTTP 客户端
+    │   └── agent.ts              # Agent 相关 API
+    ├── types/                    # 类型定义
+    │   ├── chat.ts               # 聊天类型
+    │   └── api.ts                # API 响应类型
+    ├── hooks/                    # 自定义 Hooks
+    │   ├── useChat.ts            # 聊天核心逻辑
+    │   └── useSession.ts         # 会话管理
+    ├── components/               # UI 组件
+    │   ├── ChatHeader.tsx        # 顶栏
+    │   ├── MessageList.tsx       # 消息列表
+    │   ├── MessageBubble.tsx     # 消息气泡
+    │   ├── ChatInput.tsx         # 输入区域
+    │   ├── ModeToggle.tsx        # 模式切换
+    │   ├── SessionBadge.tsx      # 会话 ID
+    │   └── TypingIndicator.tsx   # 流式指示器
+    └── styles/
+        └── index.css             # Tailwind 入口 + 自定义样式</pre>
+  </section>
+
+  <section>
+    <h2><span class="sec-num">四</span>API 接口对接</h2>
+
+    <h3>4.1 阻塞式对话</h3>
+    <pre data-lang="http">POST /api/agent/chat
+Content-Type: application/json
+
+{
+  "query": "用户问题",
+  "sessionId": "uuid-string",
+  "userNo": "user-001"
+}
+
+{
+  "code": 200,
+  "data": {
+    "answer": "AI 回复内容",
+    "sessionId": "uuid-string"
+  }
+}</pre>
+
+    <h3>4.2 流式对话</h3>
+    <pre data-lang="http">POST /api/agent/stream-chat
+Content-Type: application/json
+Accept: text/event-stream
+
+{
+  "query": "用户问题",
+  "sessionId": "uuid-string",
+  "userNo": "user-001"
+}
+
+Response:
+X-Session-Id: uuid-string
+Body: text/event-stream (data:回复片段...)</pre>
+    <p>前端使用 <code>fetch</code> + <code>ReadableStream</code> 读取并逐步追加渲染。</p>
+
+    <h3>4.3 健康检查</h3>
+    <pre data-lang="http">GET /api/agent/health
+Response: { "code": 200, "data": "Agent service is running" }</pre>
+  </section>
+
+  <section>
+    <h2><span class="sec-num">五</span>核心数据流</h2>
+
+    <h3>5.1 状态管理（React Hook 方案）</h3>
+    <p>不使用 Redux / Zustand 等第三方状态库，采用 React Hooks + Context 方案：</p>
+    <pre data-lang="text">SessionContext
+├── sessionId: string           // 当前会话 ID
+├── userNo: string              // 用户标识
+└── newSession: () => void      // 新建会话
+
+useChat Hook
+├── messages: Message[]          // 消息列表
+├── isProcessing: boolean        // 是否正在处理
+├── mode: 'blocking' | 'stream'  // 当前模式
+├── error: string | null         // 错误信息
+├── sendMessage: (query) => void // 发送消息
+├── stopStream: () => void       // 停止流式
+├── setMode: (mode) => void      // 切换模式
+└── clearMessages: () => void    // 清空消息</pre>
+
+    <h3>5.2 数据流图</h3>
+    <div class="diagram">用户输入 → sendMessage(query)
+        │
+        ├── mode === 'blocking' ──→ POST /api/agent/chat
+        │                              │
+        │                              └──→ 收到完整响应 → 追加消息
+        │
+        └── mode === 'stream'  ──→ POST /api/agent/stream-chat
+                                     │
+                                     ├── 创建空 AI 消息占位
+                                     ├── fetch ReadableStream 读取 chunks
+                                     ├── 逐块追加到 AI 消息 content
+                                     ├── 自动滚动到底部
+                                     └── 流结束 → 标记 complete</div>
+
+    <h3>5.3 消息模型</h3>
+    <pre data-lang="typescript">interface Message {
+  id: string;                    // 唯一标识
+  role: 'user' | 'assistant';    // 发送者
+  content: string;               // 内容
+  timestamp: number;             // 时间戳
+  status: 'sending' | 'streaming' | 'complete' | 'error';
+}</pre>
+  </section>
+
+  <section>
+    <h2><span class="sec-num">六</span>UI 设计方案</h2>
+
+    <h3>6.1 布局</h3>
+    <div class="diagram">┌───────────────────────────────────────────┐
+│  Header                                    │
+│  [● Spring AI Agent]  [ID: xxx]  [⚙] [+新] │
+├───────────────────────────────────────────┤
+│                                           │
+│  Messages Area (overflow-y: scroll)        │
+│                                           │
+│     ┌─────────────────────────┐            │
+│     │     用户消息 (右对齐)    │            │
+│     └─────────────────────────┘            │
+│                                           │
+│  ┌─────────────────────────────┐           │
+│  │   AI 回复 (左对齐)          │           │
+│  └─────────────────────────────┘           │
+│                                           │
+├───────────────────────────────────────────┤
+│  Input Area                                │
+│  ┌──────────────────────┐  ┌──────┐       │
+│  │ textarea (auto-grow) │  │ 发送 │       │
+│  └──────────────────────┘  └──────┘       │
+│  [流式 ○ 阻塞]                             │
+└───────────────────────────────────────────┘</div>
+
+    <h3>6.2 色板（暗色主题）</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Token</th><th>值</th><th>用途</th></tr></thead>
+        <tbody>
+          <tr><td>--bg-primary</td><td><span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:#0c0e18;vertical-align:middle;border:1px solid #333;margin-right:6px;"></span>#0c0e18</td><td>页面背景</td></tr>
+          <tr><td>--accent</td><td><span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:#f5a623;vertical-align:middle;margin-right:6px;"></span>#f5a623</td><td>强调色（琥珀金）</td></tr>
+          <tr><td>--text-primary</td><td>#e4e8f1</td><td>主文字</td></tr>
+          <tr><td>--text-secondary</td><td>#8b91a6</td><td>次要文字</td></tr>
+          <tr><td>--border</td><td>#262b3d</td><td>边框</td></tr>
+          <tr><td>--user-bubble</td><td>#1f2540</td><td>用户气泡</td></tr>
+          <tr><td>--ai-bubble</td><td>#151827</td><td>AI 气泡</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>6.3 交互细节</h3>
+    <ol>
+      <li><strong>流式模式</strong>：发送后按钮变为"停止"（红色），点击可中断 SSE 连接</li>
+      <li><strong>阻塞模式</strong>：发送后按钮显示加载旋转，不可中断</li>
+      <li><strong>自动滚动</strong>：新消息到达时自动滚到底部；用户向上滚动查看历史时暂停</li>
+      <li><strong>快捷键</strong>：<code>Enter</code> 发送，<code>Shift+Enter</code> 换行</li>
+      <li><strong>输入高度</strong>：textarea 自动增高，最多 6 行，超出后出现滚动条</li>
+      <li><strong>空状态</strong>：无消息时显示欢迎语和示例问题</li>
+      <li><strong>错误处理</strong>：消息气泡内显示错误状态，可点击重试</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2><span class="sec-num">七</span>开发计划</h2>
+
+    <h3>阶段一：项目初始化</h3>
+    <ul class="task-list">
+      <li class="checked">使用 Vite 创建 React + TypeScript 项目</li>
+      <li class="checked">配置 Tailwind CSS</li>
+      <li class="checked">配置 ESLint + Prettier</li>
+      <li class="checked">创建基础目录结构</li>
+    </ul>
+
+    <h3>阶段二：核心功能</h3>
+    <ul class="task-list">
+      <li>实现 API 客户端（阻塞 + 流式 SSE）</li>
+      <li>实现 useChat Hook</li>
+      <li>实现 useSession Hook（会话管理）</li>
+      <li>实现 MessageList + MessageBubble 组件</li>
+      <li>实现 ChatInput 组件 + ModeToggle</li>
+      <li>实现 ChatHeader + SessionBadge</li>
+    </ul>
+
+    <h3>阶段三：完善体验</h3>
+    <ul class="task-list">
+      <li>Markdown 渲染 + 代码高亮</li>
+      <li>流式文字动画效果</li>
+      <li>错误重试机制</li>
+      <li>响应式适配（移动端）</li>
+    </ul>
+
+    <h3>阶段四：构建与部署</h3>
+    <ul class="task-list">
+      <li>Vite 生产构建配置</li>
+      <li>Nginx 反向代理配置（解决 CORS）</li>
+      <li>Docker 容器化（可选）</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="sec-num">八</span>CORS 方案</h2>
+    <p>后端 <code>springai-agent</code> 运行在 <code>localhost:8082</code>，前端开发在 <code>localhost:5173</code>（Vite 默认），存在跨域问题。</p>
+
+    <h3>开发环境：Vite proxy 配置</h3>
+    <pre data-lang="typescript">// vite.config.ts
+export default defineConfig({
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8082',
+        changeOrigin: true,
+      },
+    },
+  },
+});</pre>
+
+    <h3>生产环境</h3>
+    <p>Nginx 同域代理或后端加 <code>@CrossOrigin</code></p>
+  </section>
+
+  <section>
+    <h2><span class="sec-num">九</span>性能考虑</h2>
+    <ul>
+      <li>流式渲染使用 <code>requestAnimationFrame</code> 节流，避免高频更新卡顿</li>
+      <li>消息列表虚拟化（超过 100 条时开启）</li>
+      <li>代码块使用懒加载的代码高亮组件</li>
+      <li>API 客户端复用 <code>AbortController</code> 实现请求取消</li>
+    </ul>
+  </section>
+
+</div>
+</body>
+</html>

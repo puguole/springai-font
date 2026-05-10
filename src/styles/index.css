@@ -1,0 +1,120 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --accent: #f5a623;
+  --accent-dim: rgba(245, 166, 35, 0.1);
+  --bg-primary: #0b0d16;
+  --bg-surface: #11141f;
+  --bg-surface-light: #181c2a;
+  --border-color: #262b3d;
+  --text-primary: #e4e8f1;
+  --text-secondary: #8b91a6;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #262b3d transparent;
+}
+
+*::-webkit-scrollbar { width: 6px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb { background: #262b3d; border-radius: 3px; }
+*::-webkit-scrollbar-thumb:hover { background: #3a4058; }
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'Noto Sans SC', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.markdown-body {
+  line-height: 1.75;
+  word-break: break-word;
+}
+
+.markdown-body p { margin-bottom: 0.75em; }
+.markdown-body p:last-child { margin-bottom: 0; }
+
+.markdown-body ul, .markdown-body ol {
+  padding-left: 1.25em;
+  margin-bottom: 0.75em;
+}
+
+.markdown-body li { margin-bottom: 0.25em; }
+
+.markdown-body code:not(pre code) {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85em;
+  background: rgba(245, 166, 35, 0.1);
+  color: #f5a623;
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+.markdown-body pre {
+  margin: 0.75em 0;
+  border-radius: 8px;
+  overflow-x: auto;
+}
+
+.markdown-body pre code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85em;
+  line-height: 1.6;
+}
+
+.markdown-body h1, .markdown-body h2, .markdown-body h3,
+.markdown-body h4, .markdown-body h5, .markdown-body h6 {
+  font-weight: 600;
+  margin-top: 1.25em;
+  margin-bottom: 0.5em;
+  color: #e4e8f1;
+}
+
+.markdown-body h1 { font-size: 1.4em; }
+.markdown-body h2 { font-size: 1.2em; }
+.markdown-body h3 { font-size: 1.1em; }
+
+.markdown-body blockquote {
+  border-left: 3px solid #f5a623;
+  padding: 0.5em 1em;
+  margin: 0.75em 0;
+  background: rgba(245, 166, 35, 0.05);
+  border-radius: 0 6px 6px 0;
+  color: #8b91a6;
+}
+
+.markdown-body table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.75em 0;
+  font-size: 0.9em;
+}
+
+.markdown-body th, .markdown-body td {
+  border: 1px solid #262b3d;
+  padding: 8px 12px;
+  text-align: left;
+}
+
+.markdown-body th {
+  background: #181c2a;
+  font-weight: 600;
+}
+
+.markdown-body a { color: #f5a623; text-decoration: none; }
+.markdown-body a:hover { text-decoration: underline; }
+
+.markdown-body hr {
+  border: none;
+  border-top: 1px solid #262b3d;
+  margin: 1.25em 0;
+}
